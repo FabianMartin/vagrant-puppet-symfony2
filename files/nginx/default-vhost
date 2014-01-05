@@ -1,0 +1,76 @@
+server
+{
+  listen 80 default_server;
+  # listen [::]:80 default_server;
+  server_name localhost;
+
+  root /vagrant/web/;
+
+  index app_dev.php;
+
+
+  error_log /var/log/nginx/error.log;
+  access_log /var/log/nginx/access.log;
+
+  location ~ /\.ht {
+    deny all;
+  }
+
+  location / {
+    try_files $uri /app_dev.php?$args;
+  }
+
+  client_max_body_size 32m;
+
+  location ~ \.php($|/) {
+    include fastcgi_params;
+    set $script $uri;
+    set $path_info "";
+
+    if ($uri ~ "^(.+\.php)($|/)") {
+            set $script $1;
+    }
+
+    if ($uri ~ "^(.+\.php)(/.+)") {
+            set $script $1;
+            set $path_info $2;
+    }
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_intercept_errors on;
+    fastcgi_pass unix:/var/run/php5-fpm.sock;
+    fastcgi_param SCRIPT_NAME $script;
+    fastcgi_param PATH_INFO $path_info;
+
+    fastcgi_buffers 8 256k;
+    fastcgi_buffer_size 128k;
+    fastcgi_read_timeout 120;
+
+    proxy_buffer_size   128k;
+    proxy_buffers   4 256k;
+    proxy_busy_buffers_size   256k;
+  }
+
+  # enable global phpMyAdmin
+  location /phpmyadmin {
+    root /usr/share/;
+    index index.php index.html index.htm;
+    location ~ ^/phpmyadmin/(.+\.php)$ {
+      try_files $uri =404;
+      root /usr/share/;
+      fastcgi_pass unix://var/run/php5-fpm.sock;
+      fastcgi_index index.php;
+      fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+      include /etc/nginx/fastcgi_params;
+    }
+    location ~* ^/phpmyadmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
+      root /usr/share/;
+    }
+  }
+  location /phpMyAdmin {
+    rewrite ^/* /phpmyadmin last;
+  }
+
+  location /phpma {
+    rewrite ^/* /phpmyadmin last;
+  }
+}
