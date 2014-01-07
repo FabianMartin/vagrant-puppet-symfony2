@@ -4,7 +4,7 @@ server
   # listen [::]:80 default_server;
   server_name localhost;
 
-  root /vagrant/web/;
+  root /var/www/;
 
   index app_dev.php;
 
