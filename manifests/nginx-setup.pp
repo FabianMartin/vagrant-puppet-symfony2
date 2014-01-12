@@ -1,23 +1,6 @@
 class symfony2::nginx-setup {
   apt::ppa { 'ppa:nginx/stable': }
 
-  group { "www-data":
-    ensure => "present",
-    gid => 33,
-    system => true
-  }
-
-  user { "www-data":
-    ensure => "present",
-    gid => 33,
-    home => "/var/www",
-    password => "vargrant",
-    shell => "/bin/bash",
-    system => true,
-    uid => 33,
-    require => Group["www-data"]
-  }
-
   package { "nginx":
     ensure => "latest",
     require => [Apt::Ppa["ppa:nginx/stable"], User["www-data"]]

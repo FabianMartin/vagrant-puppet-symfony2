@@ -6,7 +6,7 @@ class symfony2::less-setup {
 
   package { "nodejs":
     ensure => "installed",
-    require => Apt::Ppa["ppa:chris-lea/node.js"]
+    require => Apt::Ppa["ppa:chris-lea/node.js"],
   }
 
   exec { 'install less using npm':

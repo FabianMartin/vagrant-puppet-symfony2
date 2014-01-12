@@ -2,14 +2,7 @@ class symfony2::mapping::share {
   package { ["samba"]:
     ensure => installed,
     notify => Service['smbd'],
-    require => Package["nginx"]
-  }
-
-  file { "/var/www/":
-    ensure => directory,
-    owner => "www-data",
-    group => "www-data",
-    mode => 0644, 
+    require => User["www-data"],
   }
 
   file { "/var/www/project/":
@@ -22,7 +15,7 @@ class symfony2::mapping::share {
     mode => 0644, 
     source => "/vagrant",
     ignore => ["app", "vendor", ".idea"],
-    require => [Package["nginx"], Exec["stop-lsyncd"], File["/var/www/"]],
+    require => [User["www-data"], Exec["stop-lsyncd"], File["/var/www/"]],
   }
 
   file { "/var/www/project/app":
@@ -35,7 +28,7 @@ class symfony2::mapping::share {
     mode => 0644, 
     source => "/vagrant/app",
     ignore => ["cache", "logs"],
-    require => [Package["nginx"], Exec["stop-lsyncd"], File["/var/www/project/"]],
+    require => [User["www-data"], Exec["stop-lsyncd"], File["/var/www/project/"]],
   }
 
   file { "/var/www/project/vendor":
@@ -44,7 +37,7 @@ class symfony2::mapping::share {
     owner => "www-data",
     group => "www-data",
     mode => 0644, 
-    require => [Package["nginx"], Exec["stop-lsyncd"], File["/var/www/project/"]],
+    require => [User["www-data"], Exec["stop-lsyncd"], File["/var/www/project/"]],
   }
 
   file { '/etc/samba/smb.conf':

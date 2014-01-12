@@ -14,6 +14,7 @@ class symfony2(
   stage { 'apt-update': before => Stage['main'] }
   class { 'symfony2::apt-index-update': stage => 'apt-update' }
 
+  include symfony2::system-setup
   case $mapping_type {
       system-link: { include symfony2::mapping::system-link }
       share: { include symfony2::mapping::share }
