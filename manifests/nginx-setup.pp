@@ -1,16 +1,32 @@
 class symfony2::nginx-setup {
   apt::ppa { 'ppa:nginx/stable': }
 
+  group { "www-data":
+    ensure => "present",
+    gid => 33,
+    system => true
+  }
+
+  user { "www-data":
+    ensure => "present",
+    gid => 33,
+    home => "/var/www",
+    password => "vargrant",
+    shell => "/bin/bash",
+    system => true,
+    uid => 33,
+    require => Group["www-data"]
+  }
+
   package { "nginx":
     ensure => "latest",
-    require => Apt::Ppa["ppa:nginx/stable"]
+    require => [Apt::Ppa["ppa:nginx/stable"], User["www-data"]]
   }
 
   service { "nginx":
     enable => true,
     ensure => running,
     require => Package["nginx"],
-    subscribe => File['/etc/nginx/sites-enabled/default']
   }
 
   file { '/etc/nginx/sites-available/default':
@@ -20,6 +36,7 @@ class symfony2::nginx-setup {
     mode   => 644,
     source => 'puppet:///modules/symfony2/nginx/default-vhost',
     require => Package["nginx"],
+    notify => Service["nginx"],
   }
 
   file { "/etc/nginx/sites-enabled/default":

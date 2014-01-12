@@ -2,52 +2,33 @@ server
 {
   listen 80 default_server;
   # listen [::]:80 default_server;
-  server_name localhost;
+  # server_name localhost;
 
-  root /var/www/;
-
-  index app_dev.php;
-
+  root /var/www/project/web;
 
   error_log /var/log/nginx/error.log;
   access_log /var/log/nginx/access.log;
 
-  location ~ /\.ht {
-    deny all;
-  }
-
   location / {
-    try_files $uri /app_dev.php?$args;
+      # try to serve file directly, fallback to rewrite
+      try_files $uri @rewriteapp;
   }
 
-  client_max_body_size 32m;
+  location @rewriteapp {
+      # rewrite all to app.php
+      rewrite ^(.*)$ /app_dev.php/$1 last;
+  }
 
-  location ~ \.php($|/) {
-    include fastcgi_params;
-    set $script $uri;
-    set $path_info "";
-
-    if ($uri ~ "^(.+\.php)($|/)") {
-            set $script $1;
-    }
-
-    if ($uri ~ "^(.+\.php)(/.+)") {
-            set $script $1;
-            set $path_info $2;
-    }
-    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    fastcgi_intercept_errors on;
-    fastcgi_pass unix:/var/run/php5-fpm.sock;
-    fastcgi_param SCRIPT_NAME $script;
-    fastcgi_param PATH_INFO $path_info;
-
-    fastcgi_buffers 8 256k;
-    fastcgi_buffer_size 128k;
-    fastcgi_read_timeout 120;
-
-    proxy_buffer_size   128k;
-    proxy_buffers   4 256k;
-    proxy_busy_buffers_size   256k;
+  location ~ ^/(app|app_dev|config|info)\.php(/|$) {
+      fastcgi_pass unix:/var/run/php5-fpm.sock;
+      fastcgi_split_path_info ^(.+\.php)(/.*)$;
+      include fastcgi_params;
+      fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+      fastcgi_param HTTPS off;
+      fastcgi_intercept_errors on;
+      fastcgi_buffers 8 256k;
+      fastcgi_buffer_size 128k;
+      fastcgi_read_timeout 120;
   }
 
   # enable global phpMyAdmin

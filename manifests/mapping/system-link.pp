@@ -6,7 +6,7 @@ class symfony2::mapping::system-link {
     mode => 777,
   }
 
-  file { ["/var/www/app", "/var/www/app/cache", "/var/www/app/logs","/var/www/web" , "/var/www/web/bundles", "/var/www/vendor"]:
+  file { ["/var/www/project/app", "/var/www/project/app/cache", "/var/www/project/app/logs","/var/www/project/web" , "/var/www/project/web/bundles", "/var/www/project/vendor"]:
     ensure => directory,
     owner => "www-data",
     mode => 777,
@@ -14,22 +14,22 @@ class symfony2::mapping::system-link {
 
   temp_bind_mount { "sf2-cache":
     source => "/tmp/sf2/cache",
-    dest   => "/var/www/app/cache",
+    dest   => "/var/www/project/app/cache",
   }
 
   temp_bind_mount { "sf2-logs":
     source => "/tmp/sf2/logs",
-    dest   => "/var/www/app/logs",
+    dest   => "/var/www/project/app/logs",
   }
 
   temp_bind_mount { "sf2-bundles":
     source => "/tmp/sf2/bundles",
-    dest   => "/var/www/web/bundles",
+    dest   => "/var/www/project/web/bundles",
   }
 
   temp_bind_mount { "sf2-vendor":
     source => "/tmp/sf2/vendor",
-    dest   => "/var/www/vendor",
+    dest   => "/var/www/project/vendor",
   }
 
   # We can't use puppet's built in 'mount' resource since that

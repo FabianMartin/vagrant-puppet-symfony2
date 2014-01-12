@@ -8,7 +8,7 @@ class symfony2(
   $setup_capifony       = false,
   $setup_less           = false,
   $setup_git            = false,
-
+  $setup_lsyncd         = false,
   $mysql_root_password = undef
 )  {
   stage { 'apt-update': before => Stage['main'] }
@@ -65,5 +65,7 @@ class symfony2(
     include symfony2::git-setup
   }
 
-
+  if $setup_lsyncd == true and $mapping_type == "share" {
+    include symfony2::lsynced-setup
+  }
 }

@@ -12,6 +12,8 @@ Puppet module to install all necessary packages for symfony2 and vagrant
 * less
 * git
 * memcache
+* samba
+* lsyncd
 
 ## Configuration
 
@@ -24,7 +26,8 @@ Puppet module to install all necessary packages for symfony2 and vagrant
 	  setup_less      => false,
 	  setup_git       => false,
 	  setup_mysql     => false,
-	  setup_memcache  => false
+	  setup_memcache  => false,
+	  setup_lsyncd	  => false
 	}
 
 ### mapping_type
@@ -34,11 +37,11 @@ Puppet module to install all necessary packages for symfony2 and vagrant
 
 **system:** Add a synchronized folder in the vagrant configuration to use this option
 
-	config.vm.synced_folder ".", "/var/www", type: "nfs", owner: "www-data", group: "www-data"
+	config.vm.synced_folder ".", "/var/www/project", type: "nfs", owner: "www-data", group: "www-data"
 
 **system_link:** Same as system, in addition it will also create a number of symbolic links within the VM (app/logs, app/cache, vendor, web/bundles)
 
-**share:** Creates a file share for /var/www within the VM. During the provisioning, all files are copied from /vagrant to /var/www. All changed files will be automatically copied from /var/www to /vagrant.
+**share:** Creates a file share for /var/www within the VM. During the provisioning, all files are copied from /vagrant to /var/www/project. All changed files will be automatically copied from /var/www/project to /vagrant.
 
 ### Other options
 

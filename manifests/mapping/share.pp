@@ -1,8 +1,50 @@
 class symfony2::mapping::share {
-  package { ["samba", "lsyncd"]:
+  package { ["samba"]:
     ensure => installed,
-    notify => Service['smbd', "lsyncd"],
+    notify => Service['smbd'],
     require => Package["nginx"]
+  }
+
+  file { "/var/www/":
+    ensure => directory,
+    owner => "www-data",
+    group => "www-data",
+    mode => 0644, 
+  }
+
+  file { "/var/www/project/":
+    ensure => directory,
+    recurse => true,
+    purge => true,
+    force => true,
+    owner => "www-data",
+    group => "www-data",
+    mode => 0644, 
+    source => "/vagrant",
+    ignore => ["app", "vendor", ".idea"],
+    require => [Package["nginx"], Exec["stop-lsyncd"], File["/var/www/"]],
+  }
+
+  file { "/var/www/project/app":
+    ensure => directory,
+    recurse => true,
+    purge => true,
+    force => true,
+    owner => "www-data",
+    group => "www-data",
+    mode => 0644, 
+    source => "/vagrant/app",
+    ignore => ["cache", "logs"],
+    require => [Package["nginx"], Exec["stop-lsyncd"], File["/var/www/project/"]],
+  }
+
+  file { "/var/www/project/vendor":
+    ensure => directory,
+    force => true,
+    owner => "www-data",
+    group => "www-data",
+    mode => 0644, 
+    require => [Package["nginx"], Exec["stop-lsyncd"], File["/var/www/project/"]],
   }
 
   file { '/etc/samba/smb.conf':
@@ -14,30 +56,13 @@ class symfony2::mapping::share {
     notify => Service['smbd'],
   }
 
-  file { "/var/www/":
-    ensure => directory,
-    recurse => true,
-    purge => true,
-    force => true,
-    owner => "www-data",
-    group => "www-data",
-    mode => 0644, 
-    source => "/vagrant",
-    require => [Package["nginx"], Exec["stop-lsyncd"]],
-  }
-
-  exec { "stop-lsyncd":
-    command => "/etc/init.d/lsyncd stop",
-    onlyif => "test -f /etc/init.d/lsyncd",
-  }
-
   service{"smbd":
     ensure => running,
     require => Package["samba"],
   }
 
-  service{"lsyncd":
-    ensure => running,
-    require => [Package["lsyncd"], File["/var/www"]]
+  exec { "stop-lsyncd":
+    command => "/etc/init.d/lsyncd stop",
+    onlyif => "test -f /etc/init.d/lsyncd",
   }
 }
