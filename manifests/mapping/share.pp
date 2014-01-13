@@ -12,9 +12,9 @@ class symfony2::mapping::share {
     force => true,
     owner => "www-data",
     group => "www-data",
-    mode => 0644, 
+    mode => 0664, 
     source => "/vagrant",
-    ignore => ["app", "vendor", ".idea"],
+    ignore => ["app", "vendor", ".idea", ".git"],
     require => [User["www-data"], Exec["stop-lsyncd"], File["/var/www/"]],
   }
 
@@ -25,19 +25,29 @@ class symfony2::mapping::share {
     force => true,
     owner => "www-data",
     group => "www-data",
-    mode => 0644, 
+    mode => 0664, 
     source => "/vagrant/app",
-    ignore => ["cache", "logs"],
+    ignore => ["cache", "logs", ".git"],
     require => [User["www-data"], Exec["stop-lsyncd"], File["/var/www/project/"]],
   }
 
-  file { "/var/www/project/vendor":
+  file { ["/var/www/project/vendor", "/var/www/project/app/logs", "/var/www/project/app/cache"]:
     ensure => directory,
     force => true,
     owner => "www-data",
     group => "www-data",
-    mode => 0644, 
+    mode => 0664, 
     require => [User["www-data"], Exec["stop-lsyncd"], File["/var/www/project/"]],
+  }
+
+  mount { ["/var/www/project/app/logs", "/var/www/project/app/cache"]:
+    device => "tmpfs",
+    atboot => true,
+    options => "size=256M,rw",
+    ensure => mounted,
+    fstype => "tmpfs",
+    require => File["/var/www/project/app/logs", "/var/www/project/app/cache"],
+    remounts => false,
   }
 
   file { '/etc/samba/smb.conf':
