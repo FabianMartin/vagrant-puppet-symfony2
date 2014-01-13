@@ -1,6 +1,3 @@
-# Class: symfony2::less-setup
-#
-#
 class symfony2::less-setup {
   apt::ppa{'ppa:chris-lea/node.js': }
 
