@@ -1,6 +1,7 @@
 class symfony2::composer-setup {
   package { ["curl"]:
     ensure => "installed",
+    require => Exec["apt-get-update"],
   }
 
   exec { 'install composer php dependency management':

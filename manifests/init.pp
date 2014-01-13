@@ -16,9 +16,9 @@ class symfony2(
 
   include symfony2::system-setup
   case $mapping_type {
-      system-link: { include symfony2::mapping::system-link }
-      share: { include symfony2::mapping::share }
-    }
+    system-link: { include symfony2::mapping::system-link }
+    share: { include symfony2::mapping::share }
+  }
 
   if $setup_mysql == true {
     class { "::mysql::server":

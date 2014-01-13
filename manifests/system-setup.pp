@@ -1,9 +1,4 @@
 class symfony2::system-setup {
-  package { 'libshadow':
-    ensure   => 'installed',
-    provider => 'gem',
-  }
-
   group { "www-data":
     ensure => "present",
     gid => 33,
@@ -17,8 +12,12 @@ class symfony2::system-setup {
     shell => "/bin/bash",
     system => true,
     uid => 33,
-    password => '$6$aqzOtgCM$OxgoMP4JoqMJ1U1F3MZPo2iBefDRnRCXSfgIM36E5cfMNcE7GcNtH1P/tTC2QY3sX3BxxJ7r/9ciScIVTa55l0',
-    require => [Group["www-data"], Package["libshadow"]],
+    require => Group["www-data"],
+  }
+
+  exec { "www-data-password":
+    command => 'echo "www-data:vagrant" | chpasswd',
+    require => User["www-data"],
   }
 
   file { "/var/www/":
