@@ -33,6 +33,7 @@ class symfony2(
       password => 'symfony',
       host     => '%',
       grant    => ['ALL'],
+      require    => Class["::mysql::server"]
     }
 
     mysql_user { 'root@%':
@@ -41,6 +42,7 @@ class symfony2(
       max_queries_per_hour     => '0',
       max_updates_per_hour     => '0',
       max_user_connections     => '0',
+      require    => Class["::mysql::server"]
     }
 
     mysql_grant { 'root@%/*.*':
@@ -49,6 +51,7 @@ class symfony2(
       privileges => ['ALL'],
       table      => '*.*',
       user       => 'root@%',
+      require    => Class["::mysql::server"]
     }
   }
 
@@ -70,7 +73,7 @@ class symfony2(
   if $setup_php == true and $setup_composer == true {
     include symfony2::composer-setup
   }
-  
+
   if $setup_capifony == true {
     include symfony2::capifony-setup
   }
