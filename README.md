@@ -2,6 +2,12 @@
 
 Puppet module to install all necessary packages for symfony2 and vagrant
 
+## Install
+
+Install as git submodule
+
+	git submodule add git://github.com/FabianMartin/vagrant-puppet-symfony2.git app/vagrant/puppet/modules/symfony2
+
 ## Features
 
 * nginx
