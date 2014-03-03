@@ -1,9 +1,13 @@
 class symfony2::nginx-setup {
-  apt::ppa { 'ppa:nginx/stable': }
+  exec { 'ppa:nginx/stable':
+    command => '/usr/bin/add-apt-repository ppa:nginx/stable',
+    before => Exec['apt-ppa-update'],
+    require => Package["python-software-properties"],
+  }
 
   package { "nginx-full":
     ensure => "latest",
-    require => [Apt::Ppa["ppa:nginx/stable"], User["www-data"]]
+    require => [Exec["ppa:nginx/stable"], Exec['apt-ppa-update'], User["www-data"]]
   }
 
   service { "nginx":

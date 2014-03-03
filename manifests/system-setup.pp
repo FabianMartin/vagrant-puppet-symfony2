@@ -1,4 +1,12 @@
 class symfony2::system-setup {
+  package { "python-software-properties":
+      ensure => present,
+  }
+
+  exec {"apt-ppa-update":
+    command => "/usr/bin/apt-get update",
+  }
+
   group { "www-data":
     ensure => "present",
     gid => 33,

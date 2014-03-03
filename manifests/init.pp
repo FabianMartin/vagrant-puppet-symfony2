@@ -58,7 +58,7 @@ class symfony2(
   if $setup_memcache == true {
     package { "memcached":
       ensure => present,
-      require => Exec["apt_update"]
+      require => Exec["apt-get-update"]
     }
   }
 

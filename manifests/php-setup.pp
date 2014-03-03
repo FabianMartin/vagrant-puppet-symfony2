@@ -1,18 +1,22 @@
 class symfony2::php-setup {
   $php = ["php5-dev", "php5-gd", "php5-curl", "php5-mcrypt", "php5-xdebug", "php5-sqlite", "php5-mysql", "php5-memcache", "php5-intl", "php5-ldap", "php5-imap", "php5-imagick"]
 
-  apt::ppa { 'ppa:ondrej/php5': }
+  exec { 'ppa:ondrej/php5':
+    command => '/usr/bin/add-apt-repository ppa:ondrej/php5',
+    before => Exec['apt-ppa-update'],
+    require => Package["python-software-properties"],
+  }
 
   package { ["php5-fpm", "php5-cli"]:
     notify => Service['php5-fpm'],
     ensure => latest,
-    require => Apt::Ppa["ppa:ondrej/php5"],
+    require => [Exec["ppa:ondrej/php5"], Exec['apt-ppa-update']],
   }
 
   package { $php:
     notify => Service['php5-fpm'],
     ensure => latest,
-    require => [Apt::Ppa["ppa:ondrej/php5"], Package["php5-fpm", "php5-cli"]]
+    require => [Exec["ppa:ondrej/php5"], Exec['apt-ppa-update'], Package["php5-fpm", "php5-cli"]]
   }
 
   package { "apache2.2-bin":

@@ -1,9 +1,13 @@
 class symfony2::less-setup {
-  apt::ppa{'ppa:chris-lea/node.js': }
+  exec { 'ppa:chris-lea/node.js':
+    command => '/usr/bin/add-apt-repository ppa:chris-lea/node.js',
+    before => Exec['apt-ppa-update'],
+    require => Package["python-software-properties"],
+  }
 
   package { "nodejs":
     ensure => "installed",
-    require => Apt::Ppa["ppa:chris-lea/node.js"],
+    require => [Exec["ppa:chris-lea/node.js"], Exec['apt-ppa-update']]
   }
 
   exec { 'install less using npm':
