@@ -56,7 +56,7 @@ All other options are self-explanatory
 ## Dependencies
 
 * [puppetlabs/stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib)
-* [puppetlabs/apt](https://forge.puppetlabs.com/puppetlabs/mysql)
+* [puppetlabs/mysql](https://forge.puppetlabs.com/puppetlabs/mysql)
 
 ### As puppet module
 
