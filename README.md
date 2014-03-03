@@ -47,7 +47,7 @@ Install as git submodule
 
 **system_link:** Same as system, in addition it will also create a number of symbolic links within the VM (app/logs, app/cache, vendor, web/bundles)
 
-**share:** Creates a file share for /var/www within the VM. During the provisioning, all files are copied from /vagrant to /var/www/project. All changed files will be automatically copied from /var/www/project to /vagrant.
+**share:** Creates a file share for /var/www within the VM. During the provisioning, all files are copied from /vagrant to /var/www/project. All changed files will be automatically copied from /var/www/project to /vagrant (if setup_lsyncd is true).
 
 ### Other options
 
