@@ -14,7 +14,7 @@ class symfony2::mapping::share {
     group => "www-data",
     mode => 0664, 
     source => "/vagrant",
-    ignore => ["app", "vendor", ".idea", ".git"],
+    ignore => ["/app", "/vendor", ".idea", ".git"],
     require => [User["www-data"], Exec["stop-lsyncd"], File["/var/www/"]],
   }
 
@@ -27,7 +27,7 @@ class symfony2::mapping::share {
     group => "www-data",
     mode => 0664, 
     source => "/vagrant/app",
-    ignore => ["cache", "logs", ".git"],
+    ignore => ["/cache", "/logs", ".git"],
     require => [User["www-data"], Exec["stop-lsyncd"], File["/var/www/project/"]],
   }
 
