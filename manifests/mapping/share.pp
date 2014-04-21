@@ -40,16 +40,6 @@ class symfony2::mapping::share {
     require => [User["www-data"], Exec["stop-lsyncd"], File["/var/www/project/"]],
   }
 
-  mount { ["/var/www/project/app/logs", "/var/www/project/app/cache"]:
-    device => "tmpfs",
-    atboot => true,
-    options => "size=256M,rw",
-    ensure => mounted,
-    fstype => "tmpfs",
-    require => File["/var/www/project/app/logs", "/var/www/project/app/cache"],
-    remounts => false,
-  }
-
   file { '/etc/samba/smb.conf':
     owner  => root,
     group  => root,
